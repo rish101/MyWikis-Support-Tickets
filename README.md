@@ -1,68 +1,81 @@
-# WikiChat Support Data Pipeline
+# MyWikis Support Ticket RAG
 
-Scripts I built during my internship at MyWikis, contributing to **WikiChat**, an AI-powered customer-support chatbot. My work focused on the data/API side of the system: extracting support-ticket data from WHMCS and preparing it for semantic retrieval via Pinecone.
+A retrieval-augmented support chatbot built over a MediaWiki hosting company's
+historical support tickets. Past tickets are exported from WHMCS, embedded, and
+indexed, then a local language model answers new questions using only the
+retrieved tickets as context.
 
-## Architecture
+The retrieval half was built during an internship at MyWikis. The generation
+half, the evaluation harness, and the local index were added afterwards as a
+personal continuation of that work.
+
+## Pipeline
 
 ```
-WHMCS (ticket system)
-        │
-        ▼
-WHMCS API  →  whmcs_export.py
-        │
-        ▼
-Excel export (support_tickets_full.xlsx)
-        │
-        ▼
-Local embedding model (sentence-transformers/all-MiniLM-L6-v2)  →  pinecone_upload.py
-        │
-        ▼
-Pinecone vector database
-        │
-        ▼
-Relevant support context retrieved by WikiChat
+WHMCS API  ->  whmcs_export.py    ->  Excel export
+Excel      ->  build_index.py     ->  local vector index   (or pinecone_script.py -> Pinecone)
+Question   ->  chatbot.py         ->  grounded answer + cited ticket IDs
 ```
 
-## Scripts
+## Running it
 
-### `whmcs_export.py`
-Pulls support tickets from the WHMCS API and exports them to Excel.
-- Paginates through `GetTickets` to retrieve all ticket records
-- Fetches full details (including message history) per ticket via `GetTicket`, using a thread pool for speed
-- Handles retries for transient API/network errors
-- Outputs a structured `support_tickets_full.xlsx`
-
-### `pinecone_upload.py`
-Embeds the exported ticket data and upserts it into Pinecone.
-- Loads ticket data from the Excel export
-- Generates embeddings locally using `sentence-transformers/all-MiniLM-L6-v2` (via `transformers` + `torch`)
-- Creates the Pinecone index if it doesn't exist (384-dim, cosine similarity, serverless)
-- Upserts vectors in batches, with ticket subject/client/priority/status/message stored as metadata
-
-## Setup
+The real ticket export is company data and is not in this repo. A synthetic
+corpus of 30 realistic MediaWiki hosting tickets stands in for it so the whole
+pipeline runs with no API keys.
 
 ```bash
-pip install requests pandas openpyxl pinecone-client torch transformers
+pip install torch transformers numpy pandas openpyxl
+
+python make_synthetic_tickets.py     # writes data/synthetic_tickets.json
+python build_index.py                # embeds the corpus into index/
+python chatbot.py --question "How do I increase the upload size limit?"
+python evaluate.py                   # retrieval metrics
+python -m pytest tests/ -v           # unit tests, no model weights needed
 ```
 
-Set the following environment variables before running either script:
+To run against a real WHMCS export instead:
 
 ```bash
-export WHMCS_API_URL=https://your-panel.example.com/includes/api.php
-export WHMCS_API_IDENTIFIER=your_whmcs_api_identifier
-export WHMCS_API_SECRET=your_whmcs_api_secret
-
-export PINECONE_API_KEY=your_pinecone_api_key
-export PINECONE_HOST=your_pinecone_index_host
+python whmcs_export.py               # needs WHMCS_API_* env vars
+python build_index.py --input support_tickets_full.xlsx
 ```
 
-## Usage
+## Files
 
-```bash
-python whmcs_export.py     # WHMCS -> support_tickets_full.xlsx
-python pinecone_upload.py  # support_tickets_full.xlsx -> Pinecone index
-```
+| File | Purpose |
+|---|---|
+| `whmcs_export.py` | Pulls tickets from the WHMCS API. Paginated, with a thread pool and retries. |
+| `embeddings.py` | Shared embedding model wrapper and attention-mask-weighted mean pooling. |
+| `pinecone_script.py` | Embeds an export and upserts to a Pinecone serverless index. |
+| `vector_store.py` | Local brute-force cosine store, same shape as the Pinecone path. |
+| `build_index.py` | Embeds a corpus and writes a local index. |
+| `chatbot.py` | Retrieval, prompt construction, generation, abstention. |
+| `evaluate.py` | Retrieval metrics and score-separation analysis. |
+| `make_synthetic_tickets.py` | Generates the stand-in corpus. |
+| `tests/test_pipeline.py` | Unit tests that run without downloading model weights. |
 
-## Context
+## Design notes
 
-This was one part of a larger effort supporting WikiChat's development — I contributed to the data pipeline and retrieval layer, not the entire chatbot system end-to-end. This repo captures the API automation, data processing, and vector-retrieval setup portion of that work.
+**Pooling.** `all-MiniLM-L6-v2` needs attention-mask-weighted mean pooling. The
+original inline implementation padded every input to 512 tokens and then took a
+plain mean over the full sequence, which averaged several hundred padding vectors
+into every short ticket. `embeddings.mean_pool` fixes this and
+`tests/test_pipeline.py` pins the behaviour against the naive version.
+
+**Abstention.** If the best retrieval score is below `MIN_SCORE`, the generator is
+never called and the bot says it does not know. A support bot that confidently
+invents a configuration setting is worse than one that declines. `evaluate.py`
+reports the score distribution for in-scope and out-of-scope questions so the
+threshold can be set from data rather than guessed.
+
+**Testability.** Prompt construction is separate from generation, and the
+retriever takes an injected embedder, so the pipeline logic can be tested with a
+stub in under a second instead of loading model weights.
+
+## Known issues
+
+- `whmcs_export.py` cannot distinguish "no more pages" from "this request failed",
+  so a network error mid-export silently ends the loop and produces a partial
+  file that still reports success.
+- The local store is a brute-force matmul. Exact and instant at this scale, but it
+  would need a real ANN index past roughly a hundred thousand tickets.
