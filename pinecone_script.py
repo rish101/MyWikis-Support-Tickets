@@ -15,8 +15,8 @@ Environment:
 import os
 import pandas as pd
 from pinecone import Pinecone, ServerlessSpec
-import torch
-from transformers import AutoTokenizer, AutoModel
+
+from embeddings import Embedder, EMBEDDING_DIMENSION, ticket_text
 
 # --- Config: loaded from environment, never hardcoded ---
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
@@ -29,7 +29,6 @@ if not PINECONE_API_KEY or not PINECONE_HOST:
     )
 
 INDEX_NAME = "support-tickets"
-EMBEDDING_DIMENSION = 384  # matches the sentence-transformers model output
 INPUT_FILE = "support_tickets_full.xlsx"
 BATCH_SIZE = 50
 
@@ -61,22 +60,16 @@ except Exception as e:
     raise RuntimeError(f"Failed to connect to the index '{INDEX_NAME}': {e}")
 
 # --- Step 4: Load embedding model ---
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-print("Loading transformer model and tokenizer...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModel.from_pretrained(MODEL_NAME)
-print("Model and tokenizer loaded successfully.")
+# Pooling now lives in embeddings.py and is attention-mask weighted. The version
+# that used to be inline here padded every input to 512 tokens and then took a
+# plain mean over the whole sequence, which averaged the padding vectors into
+# each embedding and diluted short tickets badly.
+embedder = Embedder()
 
 
 def embed_text(text: str) -> list[float]:
     """Generate a mean-pooled sentence embedding for a given text."""
-    tokens = tokenizer(
-        text, return_tensors="pt", truncation=True, padding="max_length", max_length=512
-    )
-    with torch.no_grad():
-        model_output = model(**tokens)
-    embedding = torch.mean(model_output.last_hidden_state, dim=1).squeeze().tolist()
-    return embedding
+    return embedder.encode_one(text).tolist()
 
 
 # --- Step 5: Load ticket data ---
@@ -88,8 +81,8 @@ vectors_to_upsert = []
 
 for idx, row in df.iterrows():
     ticket_id = str(row["Ticket ID"])
-    combined_text = f"Subject: {row['Subject']}. Messages: {row['Messages']}"
-    embedding = embed_text(combined_text)
+    # ticket_text is shared with the local index so both paths embed identical strings.
+    embedding = embed_text(ticket_text(row))
 
     vectors_to_upsert.append(
         {

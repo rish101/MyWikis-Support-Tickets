@@ -1,0 +1,302 @@
+[
+  {
+    "Ticket ID": 1000,
+    "Subject": "VisualEditor not loading on my wiki",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Ada Okafor",
+    "Date": "2025-01-01",
+    "Department Name": "Technical Support",
+    "Messages": "2025-01-01: VisualEditor stopped working this morning. Clicking Edit just shows the source editor and the browser console has a 404 for the Parsoid endpoint. (by Ada Okafor)\n2025-01-01: Thanks for reporting. Parsoid was unreachable because the internal REST endpoint URL in your wiki config still pointed at the old app server after last week's migration. I have updated $wgVirtualRestConfig to the new host and restarted the job runner. VisualEditor should load now, please hard refresh. (by Support Staff)\n2025-01-01: Confirmed working, thank you. (by Ada Okafor)"
+  },
+  {
+    "Ticket ID": 1001,
+    "Subject": "How do I increase the maximum file upload size?",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Marcus Lin",
+    "Date": "2025-02-02",
+    "Department Name": "Technical Support",
+    "Messages": "2025-02-02: We need to upload PDFs larger than 10 MB but the wiki rejects them. (by Marcus Lin)\n2025-02-02: The upload ceiling is set by PHP rather than MediaWiki itself. On your plan we can raise upload_max_filesize and post_max_size to 64 MB. I have applied that and also raised $wgMaxUploadSize to match. Note that files over about 100 MB will still time out on slower connections. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1002,
+    "Subject": "SSL certificate expired warning on custom domain",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Priya Raman",
+    "Date": "2025-03-03",
+    "Department Name": "Technical Support",
+    "Messages": "2025-03-03: Visitors are seeing a certificate expired warning on our custom domain wiki.example.org. (by Priya Raman)\n2025-03-03: Your Let's Encrypt renewal failed because the domain's CNAME was changed and the HTTP-01 challenge could not resolve back to us. I have reissued the certificate and it is valid again. To avoid this, keep the CNAME pointed at our endpoint or tell us before changing DNS so we can switch you to DNS-01 validation. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1003,
+    "Subject": "Request to install the Cargo extension",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Tomas Vidal",
+    "Date": "2025-04-04",
+    "Department Name": "Technical Support",
+    "Messages": "2025-04-04: Could you install Cargo on our wiki? We want to build structured tables from templates. (by Tomas Vidal)\n2025-04-04: Cargo is installed and enabled. It is on our supported extension list so it will be kept up to date with your MediaWiki version automatically. You will need to declare table definitions in your templates and then run the Cargo recreate-data job from Special:CargoTables before queries return anything. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1004,
+    "Subject": "Spam accounts creating pages every night",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Hannah Brecht",
+    "Date": "2025-05-05",
+    "Department Name": "Technical Support",
+    "Messages": "2025-05-05: We are getting dozens of spam pages created overnight by new accounts. (by Hannah Brecht)\n2025-05-05: I have enabled ConfirmEdit with reCAPTCHA on account creation and on edits that add external links, and turned on AbuseFilter with our baseline spam ruleset. I also blocked the four IP ranges the accounts came from. If spam continues, we can require email confirmation before editing. (by Support Staff)\n2025-05-05: Much quieter this morning. Can we also require email confirmation? (by Hannah Brecht)\n2025-05-05: Done, $wgEmailConfirmToEdit is now true. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1005,
+    "Subject": "Need a full XML dump of our wiki content",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Yusuf Demir",
+    "Date": "2025-06-06",
+    "Department Name": "Technical Support",
+    "Messages": "2025-06-06: We need an export of all pages including history for an internal archive. (by Yusuf Demir)\n2025-06-06: I have generated a full dumpBackup XML including revision history and placed it in your account's file area as a gzipped archive. It covers the main, Template and Category namespaces. Images are not included in an XML dump, so I have also attached a separate tarball of the uploads directory. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1006,
+    "Subject": "Can we set up single sign-on with our company Google accounts?",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Elena Sokolova",
+    "Date": "2025-07-07",
+    "Department Name": "Sales",
+    "Messages": "2025-07-07: Is SSO available? We would like staff to log in with their work Google accounts. (by Elena Sokolova)\n2025-07-07: Yes. We support SAML and OpenID Connect through PluggableAuth. For Google Workspace the usual path is OpenID Connect. SSO is available on the Business plan and above. Once you confirm the upgrade we will need your client ID, client secret and the domain you want restricted to. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1007,
+    "Subject": "Wiki is very slow to load pages",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Daniel Osei",
+    "Date": "2025-08-08",
+    "Department Name": "Technical Support",
+    "Messages": "2025-08-08: Pages are taking eight to ten seconds to load since yesterday. (by Daniel Osei)\n2025-08-08: The slowdown came from an expensive Semantic MediaWiki query on your main page that was scanning every page in the wiki on each render. I have added a result limit and enabled query result caching. Load times are back to under a second. Consider using a cached query or a Cargo table for that listing. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1008,
+    "Subject": "Restore a page that was deleted by mistake",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Mei Tanaka",
+    "Date": "2025-09-09",
+    "Department Name": "Technical Support",
+    "Messages": "2025-09-09: An admin deleted our Onboarding page this morning. Can it be restored? (by Mei Tanaka)\n2025-09-09: Deleted pages are recoverable from Special:Undelete by any administrator on your wiki, and the full history is intact. I have restored it for you this time. Your admins can do this themselves in future from Special:Undelete without opening a ticket. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1009,
+    "Subject": "Email notifications are not being delivered",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Rafael Costa",
+    "Date": "2025-01-10",
+    "Department Name": "Technical Support",
+    "Messages": "2025-01-10: Watchlist notification emails are not arriving for anyone on our wiki. (by Rafael Costa)\n2025-01-10: Your wiki was sending from a custom address on your own domain, and that domain's SPF record did not include our sending servers, so the mail was being rejected. Either add our SPF include to your DNS or let us send from our default noreply address. I have temporarily switched you to the default so notifications work now. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1010,
+    "Subject": "Migrating an existing wiki from another host",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Ada Okafor",
+    "Date": "2025-02-11",
+    "Department Name": "Sales",
+    "Messages": "2025-02-11: We have a self-hosted MediaWiki 1.35 install we want to move to you. What do you need? (by Ada Okafor)\n2025-02-11: We need an XML dump with full history, a tarball of the images directory, and a list of installed extensions and any LocalSettings customizations. We will import it into a staging wiki on a current MediaWiki version, upgrade the schema, and let you review before we point DNS. Migration is included at no charge on annual plans. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1011,
+    "Subject": "How do I change the wiki skin and add our logo?",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Marcus Lin",
+    "Date": "2025-03-12",
+    "Department Name": "Technical Support",
+    "Messages": "2025-03-12: We want to use Vector 2022 and put our company logo in the corner. (by Marcus Lin)\n2025-03-12: Vector 2022 is available and I have set it as the default skin. For the logo, upload the image to the wiki and then set $wgLogos. I can point that at your uploaded file, or you can edit MediaWiki:Common.css if you want finer control. Send me the filename you want used. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1012,
+    "Subject": "Database error on save: Lock wait timeout exceeded",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Priya Raman",
+    "Date": "2025-04-13",
+    "Department Name": "Technical Support",
+    "Messages": "2025-04-13: Users are getting a database error when saving edits to large template pages. (by Priya Raman)\n2025-04-13: The errors came from a long-running Cargo data recreation job holding table locks while users were editing the same templates. I have moved that job to run off-peak and increased the innodb_lock_wait_timeout for the job runner. Saves are working normally now. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1013,
+    "Subject": "Add a new administrator to our wiki",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Tomas Vidal",
+    "Date": "2025-05-14",
+    "Department Name": "Technical Support",
+    "Messages": "2025-05-14: Please make user Jordan an administrator. (by Tomas Vidal)\n2025-05-14: Existing bureaucrats on your wiki can do this directly from Special:UserRights without contacting us. I have granted Jordan the sysop group this time. If you have lost bureaucrat access entirely, we can restore it from our side. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1014,
+    "Subject": "Question about backup frequency and retention",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Hannah Brecht",
+    "Date": "2025-06-15",
+    "Department Name": "Technical Support",
+    "Messages": "2025-06-15: How often are our wikis backed up and how long do you keep backups? (by Hannah Brecht)\n2025-06-15: Wikis are backed up nightly with database and uploads captured together. We retain daily backups for 30 days and monthly snapshots for 12 months. Restores from any retained point can be requested through a ticket and typically complete within a few hours. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1015,
+    "Subject": "Broken images after we renamed files in bulk",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Yusuf Demir",
+    "Date": "2025-07-16",
+    "Department Name": "Technical Support",
+    "Messages": "2025-07-16: We used a bot to rename about 200 files and now many pages show broken image links. (by Yusuf Demir)\n2025-07-16: The file redirects were created but the page HTML was still cached with the old names. I ran a cache purge across the affected pages and rebuilt the image links table with refreshLinks. The images are rendering again. For future bulk renames, leaving redirects enabled avoids this entirely. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1016,
+    "Subject": "Enable Semantic MediaWiki on our plan",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Elena Sokolova",
+    "Date": "2025-08-17",
+    "Department Name": "Sales",
+    "Messages": "2025-08-17: Is Semantic MediaWiki something you support and what does it cost? (by Elena Sokolova)\n2025-08-17: Yes, SMW is supported and included on Business and Enterprise plans. It is resource intensive so it is not offered on the Starter plan. If you upgrade we will install it, run the initial data rebuild, and set up the job scheduling for you. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1017,
+    "Subject": "Invoice question, charged twice this month",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Daniel Osei",
+    "Date": "2025-09-18",
+    "Department Name": "Billing",
+    "Messages": "2025-09-18: We appear to have been charged twice for the same billing period. (by Daniel Osei)\n2025-09-18: You were charged once for the renewal and once for a plan upgrade that was applied mid-cycle. The upgrade charge was prorated but the invoice line was unclear. I have refunded the difference and updated the invoice description so it is clearer going forward. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1018,
+    "Subject": "Cancel our account at the end of the term",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Mei Tanaka",
+    "Date": "2025-01-19",
+    "Department Name": "Billing",
+    "Messages": "2025-01-19: We will not be renewing. How do we cancel and get our data? (by Mei Tanaka)\n2025-01-19: I have set the account to not auto renew, so it stays active through the end of your paid term. Before that date, request a final export and we will provide the XML dump and image tarball. We keep data for 30 days after expiry and then delete it permanently. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1019,
+    "Subject": "Restrict wiki reading to logged-in users only",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Rafael Costa",
+    "Date": "2025-02-20",
+    "Department Name": "Technical Support",
+    "Messages": "2025-02-20: We need our wiki to be private, only visible to our staff accounts. (by Rafael Costa)\n2025-02-20: I have set the read permission so anonymous users cannot view pages, and left account creation restricted to administrators. Note that this hides content from search engines but images served from the uploads path can still be reachable by direct URL unless we also enable protected file access, which I have turned on. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1020,
+    "Subject": "Upgrade our MediaWiki version to the latest LTS",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Ada Okafor",
+    "Date": "2025-03-21",
+    "Department Name": "Technical Support",
+    "Messages": "2025-03-21: What is involved in moving to the current LTS release? (by Ada Okafor)\n2025-03-21: We handle upgrades for you. The usual process is a staging clone on the target version, extension compatibility checks, a schema update run, and then a short maintenance window to switch over. Most wikis are done in under an hour. Custom extensions not on our supported list may need review first. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1021,
+    "Subject": "Search results are stale and missing new pages",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Marcus Lin",
+    "Date": "2025-04-22",
+    "Department Name": "Technical Support",
+    "Messages": "2025-04-22: Newly created pages are not showing up in the wiki search. (by Marcus Lin)\n2025-04-22: The CirrusSearch index had fallen behind because the job queue was backed up behind a large import. I cleared the backlog and forced a reindex of the affected namespaces. New pages are searchable again, usually within a minute of being saved. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1022,
+    "Subject": "Can we run a bot account against the API?",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Priya Raman",
+    "Date": "2025-05-23",
+    "Department Name": "Technical Support",
+    "Messages": "2025-05-23: We want to script bulk page updates using pywikibot. (by Priya Raman)\n2025-05-23: Yes. Create a dedicated account, grant it the bot group from Special:UserRights, and generate a bot password from Special:BotPasswords with only the grants you need. Please keep write requests to a few per second so the job queue stays healthy. Let us know if you plan a very large run and we will watch the load. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1023,
+    "Subject": "Custom domain not resolving after DNS change",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Tomas Vidal",
+    "Date": "2025-06-24",
+    "Department Name": "Technical Support",
+    "Messages": "2025-06-24: We pointed our domain at you yesterday but it still does not load. (by Tomas Vidal)\n2025-06-24: The CNAME is correct but there was also an old A record for the same hostname, so resolvers were alternating between the two. Remove the A record and keep only the CNAME. Once that propagates the wiki will load and the certificate will issue automatically. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1024,
+    "Subject": "Two-factor authentication for admin accounts",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Hannah Brecht",
+    "Date": "2025-07-25",
+    "Department Name": "Technical Support",
+    "Messages": "2025-07-25: Can we require 2FA for administrators? (by Hannah Brecht)\n2025-07-25: OATHAuth is available and I have enabled it. Administrators can enrol from Special:OATH with any TOTP app. If you want it mandatory rather than optional for the sysop group we can enforce that as well, just confirm and I will apply it. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1025,
+    "Subject": "Page history shows edits from an IP we do not recognize",
+    "Status": "Closed",
+    "Priority": "High",
+    "Client Name": "Yusuf Demir",
+    "Date": "2025-08-26",
+    "Department Name": "Technical Support",
+    "Messages": "2025-08-26: There are edits in our history from an unfamiliar IP address. Were we compromised? (by Yusuf Demir)\n2025-08-26: Those edits came from an account whose password appeared in a public credential breach, not from a flaw on our side. I have blocked the account, reverted the edits, and invalidated its sessions. I would recommend enabling 2FA for privileged accounts and asking users to reset passwords. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1026,
+    "Subject": "Template rendering breaks after extension update",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Elena Sokolova",
+    "Date": "2025-09-27",
+    "Department Name": "Technical Support",
+    "Messages": "2025-09-27: Since the last update, several infobox templates render with raw wikitext showing. (by Elena Sokolova)\n2025-09-27: The update changed how ParserFunctions handles unclosed tags that your templates relied on. I have fixed the two templates that were missing a closing brace and purged the cache. The rendering is correct now. The underlying wikitext was always slightly malformed, the older version was just more forgiving. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1027,
+    "Subject": "How many users can we have on the Starter plan?",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Daniel Osei",
+    "Date": "2025-01-28",
+    "Department Name": "Sales",
+    "Messages": "2025-01-28: Is there a user limit on Starter? (by Daniel Osei)\n2025-01-28: Starter has no hard cap on registered accounts. The practical limits are storage and concurrent traffic rather than user count. Most teams move up to Business for the extension selection and SSO rather than for user limits. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1028,
+    "Subject": "Enable subpages in the main namespace",
+    "Status": "Closed",
+    "Priority": "Low",
+    "Client Name": "Mei Tanaka",
+    "Date": "2025-02-01",
+    "Department Name": "Technical Support",
+    "Messages": "2025-02-01: We want to use slash subpages for our documentation in the main namespace. (by Mei Tanaka)\n2025-02-01: Subpages are off by default in the main namespace. I have enabled $wgNamespacesWithSubpages for NS_MAIN, so breadcrumb links will now appear on pages with a slash in the title. Existing pages with slashes will start showing parent links immediately. (by Support Staff)"
+  },
+  {
+    "Ticket ID": 1029,
+    "Subject": "Set up a staging copy of our wiki for testing",
+    "Status": "Closed",
+    "Priority": "Medium",
+    "Client Name": "Rafael Costa",
+    "Date": "2025-03-02",
+    "Department Name": "Sales",
+    "Messages": "2025-03-02: We would like a sandbox copy of our production wiki to test template changes. (by Rafael Costa)\n2025-03-02: Staging wikis are available on Business and Enterprise plans. We clone production content into a separate wiki with search engine indexing disabled, and can refresh the clone from production on request. Changes on staging do not sync back automatically, they need to be reapplied. (by Support Staff)"
+  }
+]
